@@ -321,7 +321,8 @@ document.addEventListener('DOMContentLoaded', function() {
             loadIndexData(country),
             // loadPricingData(country),
             loadProductPageData(country),
-            loadContactData(country)
+            loadContactData(country),
+            loadComponent('/components/tracking.html', 'body')
         ]).then(() => {
             const animatedElements = document.querySelectorAll('.animate-on-scroll');
             if ("IntersectionObserver" in window) {
