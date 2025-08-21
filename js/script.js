@@ -49,11 +49,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p class="hero-subheadline animate-on-scroll">${data.hero.subtitle}</p>
                         <div class="hero-cta animate-on-scroll">
                             <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
-                            <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
                         </div>
                     </div>
                 `;
             }
+            // <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
+            //-    "secondary_cta": {
+            // -      "text": "See it in Action",
+            // -      "link": "#video-showcase"
 
             // Populate Trusted Clients Section
             const clientsContainer = document.getElementById('clients-section-container');
