@@ -28,19 +28,19 @@
       "icon": "fas fa-calculator",
       "title": "Finance Intelligence",
       "description": "<b>Ledger Analysis</b><br/>Detect anomalies, incorrect codes, missing narrations, or suspicious entries.<br/><b>Inter-Company Charges</b><br/>Automate reconciliations and flag anomalies.<br/><b>Smart MIS & Reporting</b><br/>Build reports based on clean, verified data.",
-      "link": "products/finance/finance-workflows.html"
+      "link": "products/finance/finance-intelligence.html"
     },
     {
       "icon": "fas fa-tasks",
       "title": "Audits & Due Diligence",
       "description": "<b>Audit Automation</b><br/>AI-powered contract reading and risk flagging.<br/><b>Due Diligence</b><br/>Perform fast, intelligent checks on financials, operations, and compliance health.",
-      "link": "products/finance/compliance-tracking.html"
+      "link": "products/finance/audit-due-diligence.html"
     },
     {
       "icon": "fas fa-file-text",
       "title": "Contracts Intelligence",
       "description": "<b>Agreement Analysis</b><br/>End-to-end audit workflows inspired by Big 4 methodologies.<br/><b>Contract Tracking</b><br/>Stay on top of obligations, renewals, and compliance clauses.",
-      "link": "products/finance/compliance-tracking.html"
+      "link": "products/finance/contract-intelligence.html"
     },
     {
       "icon": "fas fa-balance-scale",
@@ -52,7 +52,7 @@
       "icon": "fas fa-snowflake",
       "title": "Premium Knowledge Hub",
       "description": "Stay ahead of regulatory, financial, and legal changes with curated intelligence tailored for professionals. Our advisory engine combines expert insights, industry updates, case law summaries, tax & compliance changes, and global best practices—delivered in one place.",
-      "link": "products/fintech/fintech-automations.html"
+      "link": "products/finance/premium-advisory.html"
     }
   ],
   "agenticPlatform": {
