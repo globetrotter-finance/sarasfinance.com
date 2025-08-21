@@ -570,3 +570,39 @@ main > section {
         transform: translateY(-50%);
     }
 }
+
+/* --- Consent Banner Styles --- */
+.consent-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(200%); /* Start off-screen */
+    width: auto;
+    max-width: 90%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    z-index: 2000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.5s ease-in-out;
+}
+.consent-banner.show {
+    transform: translateX(-50%) translateY(0); /* Slide into view */
+}
+.consent-banner p {
+    margin: 0;
+    color: var(--text-medium);
+}
+.consent-buttons {
+    display: flex;
+    gap: 10px;
+}
+.consent-buttons .btn {
+    width: auto; /* Override full-width button style */
+    padding: 8px 16px;
+}

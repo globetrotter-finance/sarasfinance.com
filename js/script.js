@@ -19,18 +19,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // --- Function to load common components (Header/Footer) ---
+    // --- UPDATED: Function to load components and properly handle scripts ---
     const loadComponent = async (url, elementSelector) => {
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error(`Failed to load ${url}`);
             const content = await response.text();
-            const element = document.querySelector(elementSelector);
-            if (element) element.innerHTML = content;
+            const targetElement = document.querySelector(elementSelector);
+
+            if (targetElement) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(content, 'text/html');
+                const scripts = doc.querySelectorAll('script');
+
+                // First, inject the non-script HTML content
+                // For the body, we append, for others, we replace.
+                if (elementSelector.toLowerCase() === 'body') {
+                    const fragment = document.createDocumentFragment();
+                    while(doc.body.firstChild) {
+                        fragment.appendChild(doc.body.firstChild);
+                    }
+                    targetElement.appendChild(fragment);
+                } else {
+                    targetElement.innerHTML = doc.body.innerHTML;
+                }
+
+                // Then, create and append new script elements to execute them
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    // Copy attributes like 'async' or 'src'
+                    Array.from(oldScript.attributes).forEach(attr => {
+                        newScript.setAttribute(attr.name, attr.value);
+                    });
+                    // Copy inline script content
+                    if (oldScript.textContent) {
+                        newScript.textContent = oldScript.textContent;
+                    }
+                    // Append to the head to ensure it runs
+                    document.head.appendChild(newScript);
+                });
+            }
         } catch (error) {
             console.error(error);
         }
     };
+
 
     // --- Function to load dynamic data for the index page ---
     const loadIndexData = async (country) => {
@@ -310,6 +343,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // --- Function to handle cookie consent ---
+    const handleConsent = () => {
+        const consentCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('saras_consent='));
+
+        // If consent was already given, load the tracking scripts
+        if (consentCookie && consentCookie.includes('accepted')) {
+            loadComponent('/components/tracking.html', 'body');
+            return;
+        }
+
+        // If consent was declined or not yet given, show the banner
+        if (!consentCookie) {
+            loadComponent('/components/consent-banner.html', 'body').then(() => {
+                const banner = document.getElementById('consent-banner');
+                const acceptBtn = document.getElementById('consent-accept');
+                const declineBtn = document.getElementById('consent-decline');
+
+                if (!banner || !acceptBtn || !declineBtn) return;
+
+                setTimeout(() => banner.classList.add('show'), 500);
+
+                acceptBtn.addEventListener('click', () => {
+                    document.cookie = "saras_consent=accepted; max-age=31536000; path=/";
+                    banner.classList.remove('show');
+                    loadComponent('/components/tracking.html', 'body');
+                });
+
+                declineBtn.addEventListener('click', () => {
+                    document.cookie = "saras_consent=declined; max-age=31536000; path=/";
+                    banner.classList.remove('show');
+                });
+            });
+        }
+    };
 
     // --- Main function to initialize the page ---
     const initializePage = async () => {
@@ -321,7 +388,8 @@ document.addEventListener('DOMContentLoaded', function() {
             loadIndexData(country),
             // loadPricingData(country),
             loadProductPageData(country),
-            loadContactData(country)
+            loadContactData(country),
+            handleConsent()
         ]).then(() => {
             const animatedElements = document.querySelectorAll('.animate-on-scroll');
             if ("IntersectionObserver" in window) {
