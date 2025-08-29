@@ -268,13 +268,13 @@ main > section {
 /* We use two pseudo-elements to hold two corners each for a smoother blend */
 .hero::before {
     background:
-        radial-gradient(at top left, var(--top-left-glow, transparent), transparent 40%),
-        radial-gradient(at bottom right, var(--bottom-right-glow, transparent), transparent 40%);
+        radial-gradient(at left, var(--top-left-glow, transparent), transparent 40%),
+        radial-gradient(at right, var(--bottom-right-glow, transparent), transparent 40%);
 }
 .hero::after {
     background:
-        radial-gradient(at top right, var(--top-right-glow, transparent), transparent 40%),
-        radial-gradient(at bottom left, var(--bottom-left-glow, transparent), transparent 40%);
+        radial-gradient(at right, var(--top-right-glow, transparent), transparent 40%),
+        radial-gradient(at left, var(--bottom-left-glow, transparent), transparent 40%);
 }
 
 .hero-image-container {
