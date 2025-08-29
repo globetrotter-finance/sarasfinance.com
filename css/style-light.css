@@ -245,7 +245,7 @@ main > section {
 .hero {
     max-width: 1140px;
     margin: 0 auto;
-    padding-top: 221px; /* Padding + header offset */
+    padding-top: 140px; /* Padding + header offset */
     padding-bottom: 140px;
     position: relative; /* Crucial for positioning pseudo-elements */
     z-index: 2; /* Ensures content is on top */
