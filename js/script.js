@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // --- Helper function to extract colors from the left and right edges of an image ---
-    const getEdgeColors = (imageSrc, callback) => {
+    // --- Helper function to extract the average color from the four corners of an image ---
+    const getCornerColors = (imageSrc, callback) => {
         const img = new Image();
         img.crossOrigin = "Anonymous";
         img.onload = () => {
@@ -30,35 +30,37 @@ document.addEventListener('DOMContentLoaded', function() {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
 
-            // --- Get Left Edge Color ---
-            const leftPixelData = ctx.getImageData(0, 0, 1, img.height).data;
-            let rL = 0, gL = 0, bL = 0;
-            for (let i = 0; i < leftPixelData.length; i += 4) {
-                rL += leftPixelData[i];
-                gL += leftPixelData[i + 1];
-                bL += leftPixelData[i + 2];
-            }
+            const sampleSize = 10; // The size of the area to sample from each corner
 
-            // --- Get Right Edge Color ---
-            const rightPixelData = ctx.getImageData(img.width - 1, 0, 1, img.height).data;
-            let rR = 0, gR = 0, bR = 0;
-            for (let i = 0; i < rightPixelData.length; i += 4) {
-                rR += rightPixelData[i];
-                gR += rightPixelData[i + 1];
-                bR += rightPixelData[i + 2];
-            }
+            const getAverageColor = (x, y) => {
+                const pixelData = ctx.getImageData(x, y, sampleSize, sampleSize).data;
+                let r = 0, g = 0, b = 0;
+                for (let i = 0; i < pixelData.length; i += 4) {
+                    r += pixelData[i];
+                    g += pixelData[i + 1];
+                    b += pixelData[i + 2];
+                }
+                const pixelCount = pixelData.length / 4;
+                return `rgb(${Math.floor(r / pixelCount)}, ${Math.floor(g / pixelCount)}, ${Math.floor(b / pixelCount)})`;
+            };
 
-            const pixelCount = img.height;
-            const leftColor = `rgb(${Math.floor(rL / pixelCount)}, ${Math.floor(gL / pixelCount)}, ${Math.floor(bL / pixelCount)})`;
-            const rightColor = `rgb(${Math.floor(rR / pixelCount)}, ${Math.floor(gR / pixelCount)}, ${Math.floor(bR / pixelCount)})`;
+            const colors = {
+                topLeft: getAverageColor(0, 0),
+                topRight: getAverageColor(img.width - sampleSize, 0),
+                bottomLeft: getAverageColor(0, img.height - sampleSize),
+                bottomRight: getAverageColor(img.width - sampleSize, img.height - sampleSize)
+            };
 
-            callback({ leftColor, rightColor });
+            callback(colors);
         };
         img.onerror = () => {
+            const fallbackColor = 'var(--bg-secondary)';
             callback({
-                leftColor: 'var(--bg-secondary)',
-                rightColor: 'var(--bg-secondary)'
-            }); // Fallback
+                topLeft: fallbackColor,
+                topRight: fallbackColor,
+                bottomLeft: fallbackColor,
+                bottomRight: fallbackColor
+            });
         }
         img.src = imageSrc;
     };
@@ -121,24 +123,28 @@ document.addEventListener('DOMContentLoaded', function() {
             const heroWrapper = document.getElementById('hero-wrapper');
             const heroContainer = document.getElementById('hero-container');
             if (heroWrapper && heroContainer && data.hero) {
-                // Set the background image on the inner, contained section
-                heroContainer.style.backgroundImage = `url('${data.hero.image}')`;
 
-                // Inject the text content
+                // Inject the new HTML structure: an image container with text inside
                 heroContainer.innerHTML = `
-                    <div class="hero-text animate-on-scroll">
-                        <h1 class="hero-headline">${data.hero.title}</h1>
-                        <p class="hero-subheadline">${data.hero.subtitle}</p>
-                        <div class="hero-cta">
-                            <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
-                            <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
+                    <div class="hero-image-container animate-on-scroll">
+                        <img src="${data.hero.image}" alt="Saras Finance Platform Animation">
+                        <div class="hero-text">
+                            <h1 class="hero-headline">${data.hero.title}</h1>
+                            <p class="hero-subheadline">${data.hero.subtitle}</p>
+                            <div class="hero-cta">
+                                <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
+                                <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
+                            </div>
                         </div>
                     </div>
                 `;
 
-                // Extract the edge colors and apply them to the outer, full-width wrapper as a gradient
-                getEdgeColors(data.hero.image, (colors) => {
-                    heroWrapper.style.background = `linear-gradient(to right, ${colors.leftColor}, ${colors.rightColor})`;
+                // Extract the corner colors and pass them to the CSS as variables
+                getCornerColors(data.hero.image, (colors) => {
+                    heroContainer.style.setProperty('--top-left-glow', colors.topLeft);
+                    heroContainer.style.setProperty('--top-right-glow', colors.topRight);
+                    heroContainer.style.setProperty('--bottom-left-glow', colors.bottomLeft);
+                    heroContainer.style.setProperty('--bottom-right-glow', colors.bottomRight);
                 });
             }
             // <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>

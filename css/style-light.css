@@ -230,7 +230,7 @@ main > section {
     padding: 120px 0;
 }
 
-/* --- UPDATED HERO SECTION (Full-Bleed Color, Contained Image) --- */
+/* --- UPDATED HERO SECTION (Feathered Glow Effect) --- */
 #hero-wrapper {
     width: 100vw;
     position: relative;
@@ -238,32 +238,65 @@ main > section {
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    /* transition: background-color 0.5s ease; */ /* REMOVE THIS LINE */
+    background-color: var(--bg-secondary); /* A subtle fallback color */
 }
 
 .hero {
-    max-width: 1140px; /* Constrains the hero to your site's width */
-    margin: 0 auto;    /* Centers it */
-    padding: 140px 20px; /* Standard padding */
+    max-width: 1140px;
+    margin: 0 auto;
     padding-top: 221px; /* Padding + header offset */
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center; /* Center the image */
+    padding-bottom: 140px;
+    position: relative; /* Crucial for positioning pseudo-elements */
+    z-index: 2; /* Ensures content is on top */
 }
 
-.hero .container {
-    /* No longer needed, as the section is the container */
+/* These pseudo-elements create the blurred background glow */
+.hero::before, .hero::after {
+    content: '';
+    position: absolute;
+    z-index: -1; /* Place them behind the hero's content */
+    /* Make them larger than the hero to allow for a soft, feathered edge */
+    top: -100px;
+    bottom: -100px;
+    left: -100px;
+    right: -100px;
+    /* This filter creates the beautiful, soft blur effect */
+    filter: blur(100px);
+}
+
+/* We use two pseudo-elements to hold two corners each for a smoother blend */
+.hero::before {
+    background:
+        radial-gradient(at top left, var(--top-left-glow, transparent), transparent 40%),
+        radial-gradient(at bottom right, var(--bottom-right-glow, transparent), transparent 40%);
+}
+.hero::after {
+    background:
+        radial-gradient(at top right, var(--top-right-glow, transparent), transparent 40%),
+        radial-gradient(at bottom left, var(--bottom-left-glow, transparent), transparent 40%);
+}
+
+.hero-image-container {
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative; /* Anchor for the text */
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+}
+
+.hero-image-container img {
+    display: block;
+    width: 100%;
 }
 
 .hero-text {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translateY(-50%);
     width: 45%;
-    margin-left: auto;
+    z-index: 3;
     text-align: left;
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-    position: relative; /* Ensure text is on top */
-    z-index: 2;
 }
 
 .hero-headline {
