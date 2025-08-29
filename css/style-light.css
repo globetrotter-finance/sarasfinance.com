@@ -238,7 +238,7 @@ main > section {
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    transition: background-color 0.5s ease;
+    /* transition: background-color 0.5s ease; */ /* REMOVE THIS LINE */
 }
 
 .hero {

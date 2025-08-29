@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // --- Helper function to extract the center color from an image ---
-    const getCenterColor = (imageSrc, callback) => {
+    // --- Helper function to extract colors from the left and right edges of an image ---
+    const getEdgeColors = (imageSrc, callback) => {
         const img = new Image();
         img.crossOrigin = "Anonymous";
         img.onload = () => {
@@ -30,16 +30,35 @@ document.addEventListener('DOMContentLoaded', function() {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
 
-            // Get pixel data from the dead center of the image
-            const x = Math.floor(img.width / 2);
-            const y = Math.floor(img.height / 2);
-            const pixelData = ctx.getImageData(x, y, 1, 1).data;
+            // --- Get Left Edge Color ---
+            const leftPixelData = ctx.getImageData(0, 0, 1, img.height).data;
+            let rL = 0, gL = 0, bL = 0;
+            for (let i = 0; i < leftPixelData.length; i += 4) {
+                rL += leftPixelData[i];
+                gL += leftPixelData[i + 1];
+                bL += leftPixelData[i + 2];
+            }
 
-            const color = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
-            callback(color);
+            // --- Get Right Edge Color ---
+            const rightPixelData = ctx.getImageData(img.width - 1, 0, 1, img.height).data;
+            let rR = 0, gR = 0, bR = 0;
+            for (let i = 0; i < rightPixelData.length; i += 4) {
+                rR += rightPixelData[i];
+                gR += rightPixelData[i + 1];
+                bR += rightPixelData[i + 2];
+            }
+
+            const pixelCount = img.height;
+            const leftColor = `rgb(${Math.floor(rL / pixelCount)}, ${Math.floor(gL / pixelCount)}, ${Math.floor(bL / pixelCount)})`;
+            const rightColor = `rgb(${Math.floor(rR / pixelCount)}, ${Math.floor(gR / pixelCount)}, ${Math.floor(bR / pixelCount)})`;
+
+            callback({ leftColor, rightColor });
         };
         img.onerror = () => {
-            callback('var(--bg-secondary)'); // Fallback color
+            callback({
+                leftColor: 'var(--bg-secondary)',
+                rightColor: 'var(--bg-secondary)'
+            }); // Fallback
         }
         img.src = imageSrc;
     };
@@ -117,9 +136,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
 
-                // Extract the center color and apply it to the outer, full-width wrapper
-                getCenterColor(data.hero.image, (color) => {
-                    heroWrapper.style.backgroundColor = color;
+                // Extract the edge colors and apply them to the outer, full-width wrapper as a gradient
+                getEdgeColors(data.hero.image, (colors) => {
+                    heroWrapper.style.background = `linear-gradient(to right, ${colors.leftColor}, ${colors.rightColor})`;
                 });
             }
             // <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
