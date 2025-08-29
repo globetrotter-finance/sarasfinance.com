@@ -19,6 +19,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // --- Helper function to extract the edge color from an image ---
+    const getEdgeColor = (imageSrc, callback) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; // Necessary for images from different domains
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            // Get pixel data from the rightmost column of the image
+            const pixelData = ctx.getImageData(img.width - 1, 0, 1, img.height).data;
+            let r = 0, g = 0, b = 0;
+
+            // Calculate the average color of the edge pixels
+            for (let i = 0; i < pixelData.length; i += 4) {
+                r += pixelData[i];
+                g += pixelData[i + 1];
+                b += pixelData[i + 2];
+            }
+            const pixelCount = pixelData.length / 4;
+            r = Math.floor(r / pixelCount);
+            g = Math.floor(g / pixelCount);
+            b = Math.floor(b / pixelCount);
+
+            callback(`rgb(${r}, ${g}, ${b})`);
+        };
+        img.onerror = () => {
+            callback('var(--bg-secondary)'); // Fallback color if image fails to load
+        }
+        img.src = imageSrc;
+    };
+
     // --- UPDATED: Function to load components and properly handle scripts ---
     const loadComponent = async (url, elementSelector) => {
         try {
@@ -76,15 +110,27 @@ document.addEventListener('DOMContentLoaded', function() {
             // Populate Hero Section
             const heroContainer = document.getElementById('hero-container');
             if (heroContainer && data.hero) {
+                // Set the background image directly on the hero section
+                heroContainer.style.backgroundImage = `url('${data.hero.image}')`;
+
+                // Inject ONLY the text container, positioned by the new CSS
                 heroContainer.innerHTML = `
-                    <div class="container text-center">
-                        <h1 class="hero-headline animate-on-scroll">${data.hero.title}</h1>
-                        <p class="hero-subheadline animate-on-scroll">${data.hero.subtitle}</p>
-                        <div class="hero-cta animate-on-scroll">
-                            <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
+                    <div class="container">
+                        <div class="hero-text animate-on-scroll">
+                            <h1 class="hero-headline">${data.hero.title}</h1>
+                            <p class="hero-subheadline">${data.hero.subtitle}</p>
+                            <div class="hero-cta">
+                                <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
+                                <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
+                            </div>
                         </div>
                     </div>
                 `;
+
+                // Extract the edge color and set the background color, which will appear behind the image
+                getEdgeColor(data.hero.image, (color) => {
+                    heroContainer.style.backgroundColor = color;
+                });
             }
             // <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
             //-    "secondary_cta": {

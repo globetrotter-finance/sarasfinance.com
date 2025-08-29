@@ -230,25 +230,61 @@ main > section {
     padding: 120px 0;
 }
 
+/* --- UPDATED HERO SECTION (LAYERED BACKGROUND LAYOUT) --- */
 .hero {
-    padding: 180px 0 140px;
+    padding: 140px 0; /* Adjust padding to control the height */
+    padding-top: 221px; /* 140px + 81px for the fixed header */
+    position: relative; /* Acts as a positioning anchor for the text inside */
+    border-radius: 12px; /* Optional: adds a nice rounded look */
+    overflow: hidden; /* Keeps the background image contained */
+    background-size: cover;
+    background-position: left center; /* Focuses on the left side animation */
+    transition: background-color 0.5s ease;
+}
+
+.hero .container {
+    position: relative; /* Allows text to be positioned within the container */
+    z-index: 2;
+}
+
+.hero-text {
+    width: 45%; /* Restricts the text to the right half */
+    margin-left: auto; /* Pushes the text block to the right */
+    text-align: left; /* Aligns text to the left within its block */
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); /* Adds shadow for readability */
 }
 
 .hero-headline {
-    max-width: 850px;
-    margin: 0 auto 1.5rem;
-    background: linear-gradient(90deg, var(--primary-color), #3B82F6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
+    color: var(--bg-primary); /* Change text color to white for contrast */
+    background: none; /* Remove the previous text gradient */
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
 }
+
 .hero-subheadline {
-    max-width: 700px;
-    margin: 0 auto 2.5rem;
-    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9); /* Lighter text for contrast */
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
 }
-.hero-cta { display: flex; justify-content: center; gap: 20px; }
+
+.hero-cta {
+    display: flex;
+    gap: 20px;
+}
+
+/* Responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+    .hero .container {
+        grid-template-columns: 1fr; /* Stack to a single column */
+    }
+    .hero-text {
+        grid-column-start: 1; /* Reset to the first column */
+        text-align: center; /* Center the text on mobile */
+    }
+    .hero-cta {
+        justify-content: center; /* Center the buttons on mobile */
+    }
+}
 
 /* --- CORRECTED CLIENTS SECTION --- */
 .clients-section {

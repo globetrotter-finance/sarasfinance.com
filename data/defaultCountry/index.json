@@ -5,7 +5,12 @@
     "primary_cta": {
       "text": "Request a Demo",
       "link": "company/contact.html"
-    }
+    },
+    "secondary_cta": {
+      "text": "See it in Action",
+      "link": "#video-showcase"
+    },
+    "image": "/assets/saras-intelligence.gif"
   },
   "trustedClients": {
     "title": "TRUSTED BY INDUSTRY-LEADING FINANCE AND LEGAL DEPARTMENTS",
