@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // --- Helper function to extract the edge color from an image ---
-    const getEdgeColor = (imageSrc, callback) => {
+    // --- Helper function to extract the center color from an image ---
+    const getCenterColor = (imageSrc, callback) => {
         const img = new Image();
-        img.crossOrigin = "Anonymous"; // Necessary for images from different domains
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
@@ -30,25 +30,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
 
-            // Get pixel data from the rightmost column of the image
-            const pixelData = ctx.getImageData(img.width - 1, 0, 1, img.height).data;
-            let r = 0, g = 0, b = 0;
+            // Get pixel data from the dead center of the image
+            const x = Math.floor(img.width / 2);
+            const y = Math.floor(img.height / 2);
+            const pixelData = ctx.getImageData(x, y, 1, 1).data;
 
-            // Calculate the average color of the edge pixels
-            for (let i = 0; i < pixelData.length; i += 4) {
-                r += pixelData[i];
-                g += pixelData[i + 1];
-                b += pixelData[i + 2];
-            }
-            const pixelCount = pixelData.length / 4;
-            r = Math.floor(r / pixelCount);
-            g = Math.floor(g / pixelCount);
-            b = Math.floor(b / pixelCount);
-
-            callback(`rgb(${r}, ${g}, ${b})`);
+            const color = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
+            callback(color);
         };
         img.onerror = () => {
-            callback('var(--bg-secondary)'); // Fallback color if image fails to load
+            callback('var(--bg-secondary)'); // Fallback color
         }
         img.src = imageSrc;
     };
@@ -108,28 +99,27 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             // Populate Hero Section
+            const heroWrapper = document.getElementById('hero-wrapper');
             const heroContainer = document.getElementById('hero-container');
-            if (heroContainer && data.hero) {
-                // Set the background image directly on the hero section
+            if (heroWrapper && heroContainer && data.hero) {
+                // Set the background image on the inner, contained section
                 heroContainer.style.backgroundImage = `url('${data.hero.image}')`;
 
-                // Inject ONLY the text container, positioned by the new CSS
+                // Inject the text content
                 heroContainer.innerHTML = `
-                    <div class="container">
-                        <div class="hero-text animate-on-scroll">
-                            <h1 class="hero-headline">${data.hero.title}</h1>
-                            <p class="hero-subheadline">${data.hero.subtitle}</p>
-                            <div class="hero-cta">
-                                <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
-                                <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
-                            </div>
+                    <div class="hero-text animate-on-scroll">
+                        <h1 class="hero-headline">${data.hero.title}</h1>
+                        <p class="hero-subheadline">${data.hero.subtitle}</p>
+                        <div class="hero-cta">
+                            <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
+                            <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
                         </div>
                     </div>
                 `;
 
-                // Extract the edge color and set the background color, which will appear behind the image
-                getEdgeColor(data.hero.image, (color) => {
-                    heroContainer.style.backgroundColor = color;
+                // Extract the center color and apply it to the outer, full-width wrapper
+                getCenterColor(data.hero.image, (color) => {
+                    heroWrapper.style.backgroundColor = color;
                 });
             }
             // <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
