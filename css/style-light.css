@@ -238,7 +238,8 @@ main > section {
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    background-color: var(--bg-secondary); /* A subtle fallback color */
+    background-color: var(--bg-secondary);
+    overflow: hidden; /* ADD THIS LINE */
 }
 
 .hero {
