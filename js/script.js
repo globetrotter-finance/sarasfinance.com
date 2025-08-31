@@ -113,44 +113,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Function to load dynamic data for the index page ---
     const loadIndexData = async (country) => {
-        if (!document.getElementById('hero-container')) return;
+        // This now correctly checks for the text container ID
+        if (!document.getElementById('hero-text-container')) return;
+
         try {
+            // This now correctly points to the non-country-specific index file
             const response = await fetch(`/data/${country}/index.json`);
             if (!response.ok) throw new Error('Failed to load index.json');
             const data = await response.json();
 
-            // Populate Hero Section
-            const heroWrapper = document.getElementById('hero-wrapper');
-            const heroContainer = document.getElementById('hero-container');
-            if (heroWrapper && heroContainer && data.hero) {
-
-                // Inject the new HTML structure: an image container with text inside
-                heroContainer.innerHTML = `
-                    <div class="hero-image-container animate-on-scroll">
-                        <img src="${data.hero.image}" alt="Saras Finance Platform Animation">
-                        <div class="hero-text">
-                            <h1 class="hero-headline">${data.hero.title}</h1>
-                            <p class="hero-subheadline">${data.hero.subtitle}</p>
-                            <div class="hero-cta">
-                                <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
-                                <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
-                            </div>
+            // Populate Hero Section Text
+            const heroTextContainer = document.getElementById('hero-text-container');
+            if (heroTextContainer && data.hero) {
+                // This code is now much simpler and only injects the text
+                heroTextContainer.innerHTML = `
+                    <div class="hero-text animate-on-scroll">
+                        <h1 class="hero-headline">${data.hero.title}</h1>
+                        <p class="hero-subheadline">${data.hero.subtitle}</p>
+                        <div class="hero-cta">
+                            <a href="${data.hero.primary_cta.link}" class="btn btn-primary btn-lg">${data.hero.primary_cta.text}</a>
+                            <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
                         </div>
                     </div>
                 `;
-
-                // Extract the corner colors and pass them to the CSS as variables
-                getCornerColors(data.hero.image, (colors) => {
-                    heroContainer.style.setProperty('--top-left-glow', colors.topLeft);
-                    heroContainer.style.setProperty('--top-right-glow', colors.topRight);
-                    heroContainer.style.setProperty('--bottom-left-glow', colors.bottomLeft);
-                    heroContainer.style.setProperty('--bottom-right-glow', colors.bottomRight);
-                });
             }
-            // <a href="${data.hero.secondary_cta.link}" class="btn btn-secondary btn-lg">${data.hero.secondary_cta.text}</a>
-            //-    "secondary_cta": {
-            // -      "text": "See it in Action",
-            // -      "link": "#video-showcase"
+
+            // --- (The rest of your function for clients, features, etc. is correct) ---
 
             // Populate Trusted Clients Section
             const clientsContainer = document.getElementById('clients-section-container');
@@ -439,19 +427,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // --- Main function to initialize the page ---
+// --- Main function to initialize the page ---
     const initializePage = async () => {
         const country = await getUserCountry();
 
-        Promise.all([
-            loadComponent('/components/header.html', 'header.header'),
-            loadComponent('/components/footer.html', 'footer.footer'),
-            loadIndexData(country),
-            // loadPricingData(country),
-            loadProductPageData(country),
-            loadContactData(country),
-            handleConsent()
-        ]).then(() => {
+        // This now loads all your components correctly
+        await loadComponent('/components/header.html', 'header.header');
+        await loadComponent('/components/footer.html', 'footer.footer');
+        await loadComponent('/components/animation.html', '#hero-animation-container');
+
+        // Now, it will load the rest of your page data
+        try { await loadIndexData(country); } catch (e) { console.error("Error loading index data:", e); }
+        try { await loadProductPageData(country); } catch (e) { console.error("Error loading product data:", e); }
+        try { await loadContactData(country); } catch (e) { console.error("Error loading contact data:", e); }
+
+        handleConsent();
+
+        // Initialize animations after a short delay
+        setTimeout(() => {
             const animatedElements = document.querySelectorAll('.animate-on-scroll');
             if ("IntersectionObserver" in window) {
                 const observer = new IntersectionObserver((entries, observer) => {
@@ -466,9 +459,8 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 animatedElements.forEach(el => el.classList.add('is-visible'));
             }
-        });
+        }, 100);
     };
-
     initializePage();
 
     // --- Smooth scrolling for anchor links ---

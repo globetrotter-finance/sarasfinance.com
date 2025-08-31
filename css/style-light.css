@@ -230,92 +230,73 @@ main > section {
     padding: 120px 0;
 }
 
-/* --- UPDATED HERO SECTION (Feathered Glow Effect) --- */
-#hero-wrapper {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    background-color: var(--bg-secondary);
-    overflow: hidden; /* ADD THIS LINE */
-}
-
+/* --- CORRECTED HERO SECTION (Gradient + Animation Layout) --- */
 .hero {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding-top: 140px; /* Padding + header offset */
-    padding-bottom: 140px;
-    position: relative; /* Crucial for positioning pseudo-elements */
-    z-index: 2; /* Ensures content is on top */
+    padding: 120px 0;
+    padding-top: 201px; /* 120px + 81px for the fixed header */
+    position: relative;
+    overflow: hidden; /* Ensures the gradient doesn't bleed */
+
+    /* The multi-color gradient background */
+    background: linear-gradient(135deg,
+        #F0F9FF 0%,
+        #E0F2FE 25%,
+        #DBEAFE 50%,
+        #E0E7FF 75%,
+        #EFF6FF 100%
+    );
 }
 
-/* These pseudo-elements create the blurred background glow */
-.hero::before, .hero::after {
-    content: '';
-    position: absolute;
-    z-index: -1; /* Place them behind the hero's content */
-    /* Make them larger than the hero to allow for a soft, feathered edge */
-    top: -100px;
-    bottom: -100px;
-    left: -100px;
-    right: -100px;
-    /* This filter creates the beautiful, soft blur effect */
-    filter: blur(100px);
-}
-
-/* We use two pseudo-elements to hold two corners each for a smoother blend */
-.hero::before {
-    background:
-        radial-gradient(at left, var(--top-left-glow, transparent), transparent 40%),
-        radial-gradient(at right, var(--bottom-right-glow, transparent), transparent 40%);
-}
-.hero::after {
-    background:
-        radial-gradient(at right, var(--top-right-glow, transparent), transparent 40%),
-        radial-gradient(at left, var(--bottom-left-glow, transparent), transparent 40%);
-}
-
-.hero-image-container {
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative; /* Anchor for the text */
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-}
-
-.hero-image-container img {
-    display: block;
-    width: 100%;
+.hero .container {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr; /* Left column is smaller, right is larger for text */
+    align-items: center;
+    gap: 60px;
+    position: relative;
+    z-index: 2;
 }
 
 .hero-text {
-    position: absolute;
-    top: 50%;
-    right: 40px;
-    transform: translateY(-50%);
-    width: 45%;
-    z-index: 3;
     text-align: left;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 
 .hero-headline {
-    color: var(--bg-primary);
+    font-size: 3.2rem;
+    color: var(--text-dark); /* Using dark text for light background */
     background: none;
     -webkit-background-clip: unset;
     -webkit-text-fill-color: unset;
+    text-shadow: none;
 }
-
 .hero-subheadline {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-medium);
     font-size: 1.1rem;
     margin-bottom: 2.5rem;
 }
-
 .hero-cta {
     display: flex;
     gap: 20px;
+}
+
+/* --- Animation Component Styles --- */
+#hero-animation-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    min-height: 450px;
+}
+.canvas-container {
+    width: 100%;
+    max-width: 550px;
+    height: 100%;
+    position: relative;
+}
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 /* Responsive adjustment for smaller screens */
