@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurable SVG Animation Component</title>
     <style>
-        /*
-         * NOTE: The body has NO background color to demonstrate the component's transparency.
-         * The other styles are only to center the animation for this example file.
-        */
         body {
             margin: 0;
             width: 100vw;
@@ -18,8 +14,6 @@
             align-items: center;
             overflow: hidden;
         }
-
-        /* --- CSS for the Component's Container --- */
         .svg-container {
             width: 650px;
             height: 650px;
@@ -28,16 +22,9 @@
 </head>
 <body>
 
-    <!-- --- HTML Placeholder for the Component --- -->
     <div id="svg-container" class="svg-container"></div>
 
-    <!-- --- JavaScript to Generate and Inject the SVG --- -->
     <script>
-        /**
-         * Generates and injects a configurable, scattered AI dot animation as an SVG.
-         * @param {string} containerId The ID of the container element for the SVG.
-         * @param {object} [options={}] Optional configuration overrides.
-         */
         function createAiAnimationSVG(containerId, options = {}) {
             const container = document.getElementById(containerId);
             if (!container) {
@@ -45,9 +32,9 @@
                 return;
             }
 
-            // --- Default Configuration ---
             const defaultConfig = {
                 centralLogoPath: '',
+                centralLogoSize: 120,
                 particleCount: 70,
                 baseRadius: 120,
                 radiusVariance: 40,
@@ -55,16 +42,17 @@
                 dotRotationSpeed: 60,
                 logoRotationSpeed: 80,
                 numBreathingAnimations: 5,
-                dotSize: 1.5,
+                dotSize: 2.0,
                 glowDeviation: 7,
                 rotatingLogos: [],
                 logoCircleRadius: 90,
-                rotatingLogoSize: 30
+                rotatingLogoSize: 1000,
+                rotatingLogoSpinSpeed: 20, // NEW: logos spin on their own axis
+                rotatingLogoGlow: true     // NEW: glow effect for logos
             };
             const config = { ...defaultConfig, ...options };
 
             function generateSVG() {
-                // 1. --- Generate CSS for Animations ---
                 let animationStyles = `
                     #dots-rotation-group {
                         animation: rotate-dots ${config.dotRotationSpeed}s linear infinite;
@@ -77,21 +65,21 @@
 
                     #logos-rotation-group {
                         animation: rotate-logos ${config.logoRotationSpeed}s linear infinite;
-                        transform-origin: center;
+                        transform-origin: 200px 200px;
                     }
                     @keyframes rotate-logos {
                         from { transform: rotate(0deg); }
                         to { transform: rotate(360deg); }
                     }
 
-                    /* --- FIX: Keyframe and class for counter-rotation --- */
+                    /* Each logo spins on its own axis */
                     .orbiting-logo {
-                        /* The transform-origin is set inline on each logo */
-                        animation: counter-rotate-logos ${config.logoRotationSpeed}s linear infinite;
+                        animation: counter-rotate ${config.logoRotationSpeed}s linear infinite;
+                        transform-origin: center;
                     }
-                    @keyframes counter-rotate-logos {
+                    @keyframes counter-rotate {
                         from { transform: rotate(0deg); }
-                        to { transform: rotate(-360deg); } /* Rotates in the opposite direction */
+                        to { transform: rotate(-360deg); } /* Note the negative value */
                     }
 
                     .ring-group { transform-origin: center; }
@@ -110,7 +98,7 @@
                     `;
                 }
 
-                // 2. --- Generate SVG Dot Elements ---
+                // --- Generate SVG Dots ---
                 let dotGroups = Array.from({ length: config.numBreathingAnimations }, () => '');
                 for (let i = 0; i < config.particleCount; i++) {
                     const angle = Math.random() * 2 * Math.PI;
@@ -127,7 +115,7 @@
                     finalDotsSVG += `<g class="ring-group breathe-${index + 1}" style="${animationDelay}">${group}</g>\n`;
                 });
 
-                // 3. --- Generate SVG for Rotating Logos ---
+                // --- Generate Rotating Logos ---
                 let rotatingLogosSVG = '';
                 if (config.rotatingLogos && config.rotatingLogos.length > 0) {
                     const logoCount = config.rotatingLogos.length;
@@ -139,18 +127,22 @@
                         const x = 200 + config.logoCircleRadius * Math.cos(angle);
                         const y = 200 + config.logoCircleRadius * Math.sin(angle);
 
-                        // FIX: Apply counter-rotation directly to each image, with its own center as the origin
+                        // FIXED: numeric math first, then format
+                        const xPos = x - logoSize / 2;
+                        const yPos = y - logoSize / 2;
+
                         rotatingLogosSVG += `<image class="orbiting-logo"
-                            transform-origin="${x.toFixed(2)} ${y.toFixed(2)}"
+                            ${config.rotatingLogoGlow ? 'filter="url(#logo-glow)"' : ''}
                             xlink:href="${logoSrc}"
-                            x="${x.toFixed(2) - logoSize / 2}"
-                            y="${y.toFixed(2) - logoSize / 2}"
+                            x="${xPos.toFixed(2)}"
+                            y="${yPos.toFixed(2)}"
                             height="${logoSize}"
-                            width="${logoSize}"/>\n`;
+                            width="${logoSize}"/>`;
                     });
                 }
 
-                // 4. --- Assemble the Final SVG ---
+                // --- Final SVG ---
+                const centralLogoPos = 200 - (config.centralLogoSize / 2);
                 const finalSVG = `
                     <svg width="100%" height="100%" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <style>${animationStyles}</style>
@@ -162,6 +154,13 @@
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
+                            <filter id="logo-glow">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
                         </defs>
                         <g id="animation-container" filter="url(#glow)">
                             <g id="dots-rotation-group">
@@ -171,34 +170,33 @@
                                 ${rotatingLogosSVG}
                             </g>
                         </g>
-                        <image xlink:href="${config.centralLogoPath}" x="160" y="160" height="80" width="80"/>
+                        <image xlink:href="${config.centralLogoPath}" x="${centralLogoPos}" y="${centralLogoPos}" height="${config.centralLogoSize}" width="${config.centralLogoSize}"/>
                     </svg>`;
-
                 return finalSVG;
             }
 
             container.innerHTML = generateSVG();
         }
 
-        // --- Configuration for the Animation ---
+        // --- Example Config ---
         createAiAnimationSVG('svg-container', {
             centralLogoPath: '/assets/LOGO.png',
-            colors: ['#4682B4', '#6495ED', '#87CEFA', '#B0E0E6', '#ADD8E6', '#AFEEEE', '#40E0D0', '#00CED1', '#00BFFF', '#1E90FF'],
+            colors: ['#20B2AA', '#4682B4', '#B0E0E6', '#778899', '#708090', '#6A5ACD', '#48D1CC', '#87CEEB', '#ADD8E6', '#AFEEEE'],
             baseRadius: 140,
             radiusVariance: 50,
-            particleCount: 200,
+            particleCount: 150,
             dotRotationSpeed: 70,
-            logoRotationSpeed: 50,
             rotatingLogos: [
-                'https://placehold.co/100x100/FFFFFF/000000?text=L1',
-                'https://placehold.co/100x100/FFFFFF/000000?text=L2',
-                'https://placehold.co/100x100/FFFFFF/000000?text=L3',
-                'https://placehold.co/100x100/FFFFFF/000000?text=L4',
-                'https://placehold.co/100x100/FFFFFF/000000?text=L5',
-                'https://placehold.co/100x100/FFFFFF/000000?text=L6'
+                '/assets/integrations/oracle-netsuite.svg',
+                '/assets/integrations/zoho.svg',
+                '/assets/integrations/sap.svg',
+                '/assets/integrations/dynamics.svg',
             ],
-            logoCircleRadius: 100,
-            rotatingLogoSize: 35
+            logoCircleRadius: 120,
+
+            rotatingLogoSize: 85,         // change size
+            rotatingLogoSpinSpeed: 40,    // spin each logo on its axis
+            rotatingLogoGlow: false        // glow effect
         });
     </script>
 </body>
@@ -206,41 +204,23 @@
 
 <!--
 Vibrant & Playful
-
 colors: ['#FF6347', '#FFD700', '#ADFF2F', '#1E90FF', '#FF1493', '#9400D3', '#00FFFF', '#FFA500', '#8A2BE2', '#DC143C']
 
 Earthy & Natural
-
 colors: ['#A0522D', '#D2B48C', '#8FBC8F', '#483D8B', '#C0C0C0', '#BDB76B', '#556B2F', '#696969', '#E6E6FA', '#F5DEB3']
 
 Deep & Mysterious
-
 colors: ['#4B0082', '#00008B', '#8B0000', '#2F4F4F', '#008080', '#5D3FD3', '#FF4500', '#A52A2A', '#191970', '#800080']
 
 Pastel & Dreamy
-
 colors: ['#FFB6C1', '#ADD8E6', '#F0E68C', '#E0B0FF', '#B0E0E6', '#FAFAD2', '#98FB98', '#FFDAB9', '#EEDDFF', '#FFF8DC']
 
 Bold & Saturated
-
-colors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF', '#FF00FF', '#800000', '#008000', '#000080', '#808000']
+    colors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF', '#FF00FF', '#800000', '#008000', '#000080', '#808000']
 
 Cool & Calming
-
-colors: ['#20B2AA', '#4682B4', '#B0E0E6', '#778899', '#708090', '#6A5ACD', '#48D1CC', '#87CEEB', '#ADD8E6', '#AFEEEE']
-
-Warm & Inviting
-
-colors: ['#CD5C5C', '#F08080', '#FFA07A', '#FF7F50', '#FFD700', '#DAA520', '#B8860B', '#FF8C00', '#D2691E', '#FF4500']
-
-Retro & Funky
-
-colors: ['#FF69B4', '#DA70D6', '#9370DB', '#4169E1', '#00CED1', '#3CB371', '#FFA500', '#FF4500', '#ADFF2F', '#FFFF00']
-
-Sunset & Sunrise
-
-colors: ['#FF8C00', '#FFA500', '#FF7F50', '#FF6347', '#FF4500', '#DA70D6', '#9932CC', '#8A2BE2', '#4B0082', '#00008B']
+    colors: ['#20B2AA', '#4682B4', '#B0E0E6', '#778899', '#708090', '#6A5ACD', '#48D1CC', '#87CEEB', '#ADD8E6', '#AFEEEE']
 
 Ocean & Sky
-
-colors: ['#4682B4', '#6495ED', '#87CEFA', '#B0E0E6', '#ADD8E6', '#AFEEEE', '#40E0D0', '#00CED1', '#00BFFF', '#1E90FF'] -->
+colors: ['#4682B4', '#6495ED', '#87CEFA', '#B0E0E6', '#ADD8E6', '#AFEEEE', '#40E0D0', '#00CED1', '#00BFFF', '#1E90FF']
+-->
