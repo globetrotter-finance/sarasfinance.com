@@ -758,3 +758,129 @@ canvas {
     width: auto; /* Override full-width button style */
     padding: 8px 16px;
 }
+
+/* --- Integrations Marquee Section --- */
+.integrations-section {
+    position: relative; /* This is crucial for layering */
+    padding: 120px 0;
+    overflow: hidden; /* This contains the animation */
+}
+
+.integrations-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Space between each scrolling row */
+}
+
+.marquee-row {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+.marquee-inner {
+    display: inline-block;
+    white-space: nowrap;
+    /* The animation will be applied here */
+}
+
+/* Make odd rows scroll left-to-right */
+.marquee-row:nth-child(odd) .marquee-inner {
+    animation: marquee-ltr 60s linear infinite;
+}
+
+/* Make even rows scroll right-to-left */
+.marquee-row:nth-child(even) .marquee-inner {
+    animation: marquee-rtl 80s linear infinite; /* Slower speed for variety */
+}
+
+.marquee-row img {
+    height: 50px; /* Uniform height for all logos */
+    width: auto;
+    margin: 0 25px; /* Space between logos */
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.marquee-row img:hover {
+    filter: grayscale(0);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+@keyframes marquee-ltr {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-rtl {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0%); }
+}
+
+/* --- Advanced Integrations Section --- */
+.integrations-section {
+    position: relative; /* This is crucial for layering the animation */
+    padding: 120px 0;
+    overflow: hidden; /* This contains the animation */
+    background: linear-gradient(135deg,
+        #F0F9FF 0%, #E0F2FE 25%, #DBEAFE 50%, #E0E7FF 75%, #EFF6FF 100%
+    );
+}
+
+.integrations-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1; /* Layer 1: The very back */
+    background: linear-gradient(135deg,
+        #F0F9FF 0%,
+        #E0F2FE 25%,
+        #DBEAFE 50%,
+        #E0E7FF 75%,
+        #EFF6FF 100%
+    );
+}
+
+#integrations-animation-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 800px;
+    z-index: 2; /* Layer 2: On top of the gradient */
+    opacity: 0.5;
+    filter: blur(20px);
+}
+
+#integrations-grid-container {
+    position: relative;
+    z-index: 3; /* Layer 3: On top of everything */
+}
+
+.integration-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 150px;
+    margin: 0 25px;
+    opacity: 0.8; /* We can use opacity instead of grayscale */
+    transition: all 0.3s ease;
+}
+
+.integration-item i {
+    font-size: 3rem; /* Large icon */
+    margin-bottom: 12px;
+    color: var(--text-medium);
+}
+
+.integration-item span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
