@@ -24,6 +24,11 @@
       { "name": "Connect Co", "path": "/assets/clients/connectco.png" }
     ]
   },
+  "videoShowcase": {
+    "thumbnail": "https://img.youtube.com/vi/xD5fVXq070s/maxresdefault.jpg",
+    "altText": "Saras Platform Overview Video Thumbnail",
+    "videoId": "xD5fVXq070s"
+  },
   "featuresHeader": {
     "title": "One Platform.<br>Multiple Game-Changing Solutions.",
     "subtitle": "We’re building the world’s first agentic platform for finance and compliance—where AI doesn’t just generate insights, it takes action, enforces accuracy, and ensures every report, audit, or compliance task is built on clean, reliable data.<br><br>Our suite of products is designed to solve real-world challenges that finance, tax, and legal professionals face every day."

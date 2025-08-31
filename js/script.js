@@ -19,6 +19,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // --- NEW: Function to initialize the YouTube Modal ---
+    const initializeVideoModal = (videoId, placeholderElement) => {
+        const videoModal = document.getElementById('video-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const youtubePlayer = document.getElementById('youtube-player');
+
+        // This safety check is now more direct
+        if (!placeholderElement || !videoModal || !closeModalBtn || !youtubePlayer) {
+            console.error("Video modal initialization failed: One or more elements are missing.");
+            return;
+        }
+
+        const openModal = () => {
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            videoModal.classList.add('show');
+        };
+
+        const closeModal = () => {
+            videoModal.classList.remove('show');
+            youtubePlayer.src = "";
+        };
+
+        placeholderElement.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) closeModal();
+        });
+    };
+
     // --- Helper function to extract the average color from the four corners of an image ---
     const getCornerColors = (imageSrc, callback) => {
         const img = new Image();
@@ -158,6 +187,25 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 `;
+            }
+
+            // Populate Video Showcase Section
+            const videoContainer = document.getElementById('video-showcase');
+            if (videoContainer && data.videoShowcase) {
+                videoContainer.innerHTML = `
+                    <div class="container">
+                        <div class="video-placeholder animate-on-scroll">
+                            <img src="${data.videoShowcase.thumbnail}" alt="${data.videoShowcase.altText}">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // CRUCIAL FIX: Find the element we JUST created and pass it to the function
+                const newPlaceholder = videoContainer.querySelector('.video-placeholder');
+                initializeVideoModal(data.videoShowcase.videoId, newPlaceholder);
             }
 
             // Populate Features Section

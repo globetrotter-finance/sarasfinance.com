@@ -58,17 +58,20 @@
         <!-- Clients/Social Proof Section will be loaded dynamically -->
         <section id="clients-section-container" class="clients-section"></section>
 
-        <!-- Video Showcase Section (Static) -->
-        <!-- <section id="video-showcase" class="video-showcase">
-            <div class="container">
-                <div class="video-placeholder animate-on-scroll">
-                    <img src="https://placehold.co/1200x675/DEE2E6/495057?text=Saras+Platform+Overview" alt="Saras Platform Video Thumbnail">
-                    <div class="play-button">
-                        <i class="fas fa-play"></i>
-                    </div>
-                </div>
-            </div>
-        </section> -->
+        <!-- YouTube Video Modal -->
+        <!-- ADD OR VERIFY THIS CODE IS AT THE BOTTOM OF index.html -->
+
+<!-- YouTube Video Modal
+<div id="video-modal" class="video-modal">
+    <div class="video-modal-content">
+        <button id="close-modal-btn" class="close-modal-btn" aria-label="Close video player">&times;</button>
+        <div class="video-responsive-container">
+            <iframe id="youtube-player" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+</div> -->
+
+        <section id="video-showcase" class="video-showcase"></section>
 
         <!-- Features Section will be loaded dynamically -->
         <section id="features-section-container" class="features-section"></section>
@@ -80,6 +83,15 @@
         <section id="final-cta-container" class="final-cta"></section>
 
     </main>
+
+    <div id="video-modal" class="video-modal">
+        <div class="video-modal-content">
+            <button id="close-modal-btn" class="close-modal-btn" aria-label="Close video player">&times;</button>
+            <div class="video-responsive-container">
+                <iframe id="youtube-player" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer will be loaded dynamically by script.js -->
     <footer class="footer"></footer>
