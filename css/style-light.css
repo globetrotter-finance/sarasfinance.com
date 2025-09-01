@@ -227,7 +227,7 @@ a { color: var(--primary-color); text-decoration: none; }
 
 /* --- Main Sections & Spacing --- */
 main > section {
-    padding: 120px 0;
+    padding: 60px 0;
 }
 
 /* --- CORRECTED HERO SECTION (Gradient + Animation Layout) --- */
@@ -363,7 +363,9 @@ canvas {
 /* --- Video Showcase Section Styles --- */
 .video-showcase {
     /* This gives the section its vertical spacing */
-    padding: 120px 0;
+    padding: 0px 0;
+    margin-top: -80px;
+    padding-bottom: 60px;
 }
 
 .video-placeholder {
@@ -757,65 +759,4 @@ canvas {
 .consent-buttons .btn {
     width: auto; /* Override full-width button style */
     padding: 8px 16px;
-}
-
-/* --- Integrations Marquee Section --- */
-.integrations-section {
-    position: relative; /* This is crucial for layering */
-    padding: 120px 0;
-    overflow: hidden; /* This contains the animation */
-}
-
-.integrations-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 25px; /* Space between each scrolling row */
-}
-
-.marquee-row {
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-}
-
-.marquee-inner {
-    display: inline-block;
-    white-space: nowrap;
-    /* The animation will be applied here */
-}
-
-/* Make odd rows scroll left-to-right */
-.marquee-row:nth-child(odd) .marquee-inner {
-    animation: marquee-ltr 60s linear infinite;
-}
-
-/* Make even rows scroll right-to-left */
-.marquee-row:nth-child(even) .marquee-inner {
-    animation: marquee-rtl 80s linear infinite; /* Slower speed for variety */
-}
-
-.marquee-row img {
-    height: 50px; /* Uniform height for all logos */
-    width: auto;
-    margin: 0 25px; /* Space between logos */
-    filter: grayscale(100%);
-    opacity: 0.6;
-    transition: all 0.3s ease;
-}
-
-.marquee-row img:hover {
-    filter: grayscale(0);
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-@keyframes marquee-ltr {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-50%); }
-}
-
-@keyframes marquee-rtl {
-    0% { transform: translateX(-50%); }
-    100% { transform: translateX(0%); }
 }
