@@ -269,40 +269,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
             }
 
-            // Populate Integrations Section
-            const integrationsContainer = document.getElementById('integrations-grid-container');
-            if (integrationsContainer && data.integrations) {
-                const logos = data.integrations.logos;
-                const rows = 4;
-                const logosPerRow = Math.ceil(logos.length / rows);
-                let allRowsHTML = '';
-
-                for (let i = 0; i < rows; i++) {
-                    const rowLogos = logos.slice(i * logosPerRow, (i + 1) * logosPerRow);
-                    const logosHTML = rowLogos.map(item => `<div class="integration-item"><i class="${item.icon}" style="color: ${item.color};"></i><span>${item.name}</span></div>`).join('');
-
-                    allRowsHTML += `
-                        <div class="marquee-row">
-                            <div class="marquee-inner">
-                                ${logosHTML}${logosHTML}
-                            </div>
-                        </div>
-                    `;
-                }
-
-                integrationsContainer.innerHTML = `
-                    <div class="container">
-                        <div class="section-header text-center animate-on-scroll">
-                            <h2>${data.integrations.title}</h2>
-                            <p>${data.integrations.subtitle}</p>
-                        </div>
-                        <div class="integrations-grid animate-on-scroll">
-                            ${allRowsHTML}
-                        </div>
-                    </div>
-                `;
-            }
-
             // Populate Final CTA Section
             const finalCtaContainer = document.getElementById('final-cta-container');
             if (finalCtaContainer && data.finalCta) {
@@ -518,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
         await loadComponent('/components/header.html', 'header.header');
         await loadComponent('/components/footer.html', 'footer.footer');
         await loadComponent('/components/animation.html', '#hero-animation-container');
-        await loadComponent('/components/animation.html', '#integrations-animation-container');
+        await loadComponent('/components/animation2.html', '#integrations-animation-container');
 
         // Now, it will load the rest of your page data
         try { await loadIndexData(country); } catch (e) { console.error("Error loading index data:", e); }

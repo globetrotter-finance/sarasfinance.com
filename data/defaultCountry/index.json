@@ -71,7 +71,7 @@
     "description": "This isn’t just another reporting or workflow tool. Our platform is built with autonomous financial agents—AI-driven modules that continuously:<br><li>Scan your ledgers, contracts, and compliance data</li><li>Flag and fix anomalies before they snowball</li><li>Automate allocations, reconciliations, and documentation</li><li>Learn from your data to get smarter every cycle</li><br><br>Why it matters:<br>Instead of running on top of flawed inputs, your audits, MIS, or compliance processes are rooted in clean, accurate, and actionable data. This is where finance shifts from reactive reporting to proactive intelligence.",
     "cta": {
       "text": "Learn About Our Technology",
-      "link": "company/about.html"
+      "link": "platform/agentic-ai.html"
     },
     "image": "/assets/hero.gif",
     "scrollingUseCases": [
@@ -92,38 +92,6 @@
       "Disputes Resolved",
       "Expenses Analyzed",
       "Accounts Reconciled"
-    ]
-  },
-  "integrations": {
-    "title": "An Agentic Platform for Your Entire Stack",
-    "subtitle": "Our platform seamlessly integrates across your entire enterprise ecosystem, from ERPs and CRMs with custom integration to generic MCP servers.",
-    "logos": [
-      { "name": "Salesforce", "icon": "fab fa-salesforce", "color": "#00A1E0" },
-      { "name": "SAP", "icon": "fas fa-database", "color": "#008FD3" },
-      { "name": "Oracle", "icon": "fab fa-java", "color": "#F80000" },
-      { "name": "Slack", "icon": "fab fa-slack", "color": "#4A154B" },
-      { "name": "Microsoft", "icon": "fab fa-microsoft", "color": "#737373" },
-      { "name": "Google Drive", "icon": "fab fa-google-drive", "color": "#4285F4" },
-      { "name": "Dropbox", "icon": "fab fa-dropbox", "color": "#0061FF" },
-      { "name": "Jira", "icon": "fab fa-jira", "color": "#0052CC" },
-      { "name": "Trello", "icon": "fab fa-trello", "color": "#0079BF" },
-      { "name": "HubSpot", "icon": "fab fa-hubspot", "color": "#FF7A59" },
-      { "name": "Stripe", "icon": "fab fa-stripe-s", "color": "#635BFF" },
-      { "name": "PayPal", "icon": "fab fa-paypal", "color": "#003087" },
-      { "name": "Shopify", "icon": "fab fa-shopify", "color": "#7AB55C" },
-      { "name": "GitHub", "icon": "fab fa-github", "color": "#181717" },
-      { "name": "GitLab", "icon": "fab fa-gitlab", "color": "#FC6D26" },
-      { "name": "Docker", "icon": "fab fa-docker", "color": "#2496ED" },
-      { "name": "AWS", "icon": "fab fa-aws", "color": "#FF9900" },
-      { "name": "Google Cloud", "icon": "fab fa-google", "color": "#4285F4" },
-      { "name": "Mailchimp", "icon": "fab fa-mailchimp", "color": "#FFE01B" },
-      { "name": "Zoom", "icon": "fas fa-video", "color": "#2D8CFF" },
-      { "name": "Tableau", "icon": "fas fa-chart-line", "color": "#E12727" },
-      { "name": "MongoDB", "icon": "fas fa-leaf", "color": "#47A248" },
-      { "name": "Twilio", "icon": "fas fa-sms", "color": "#F22F46" },
-      { "name": "Docusign", "icon": "fas fa-file-signature", "color": "#FFD300" },
-      { "name": "G Suite", "icon": "fab fa-google", "color": "#4285F4" },
-      { "name": "Azure DevOps", "icon": "fab fa-windows", "color": "#0078D4" }
     ]
   },
   "finalCta": {
